@@ -6,6 +6,20 @@
   left: 372px;
   top: 106px;
   border: 2px dashed #C4C4C4;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 6px;
+  &__display {
+    width: 232px;
+    height: 52px;
+    padding: 4px;
+    margin-bottom: 12px;
+    background: #FFFFFF;
+  }
+  &__displayNone {
+    display: none;
+  }
+}
+.dropZone {
+  background: #F0F9FF;
 }

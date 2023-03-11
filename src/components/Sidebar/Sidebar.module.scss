@@ -1,7 +1,116 @@
 .sidebar {
-  position: absolute;
   width: 240px;
-  height: 60px;
-  left: 76px;
-  top: 106px;
+  margin-top: 106px;
+  margin-left: 76px;
+  &__display {
+    width: 232px;
+    height: 52px;
+    padding: 4px;
+    margin-bottom: 12px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    &__in {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+      // gap: 10px;
+      position: absolute;
+      width: 232px;
+      height: 52px;
+      background: #F3F4F6;
+      border-radius: 6px;
+      & span {
+        max-width: 220px;
+        height: 44px;
+        padding-right: 8px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 800;
+        font-size: 36px;
+        line-height: 44px;
+        display: flex;
+        align-items: flex-end;
+        text-align: right;
+        color: #111827;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+    }
+  }
+  &__operators {
+    width: 232px;
+    height: 48px;
+    padding: 4px;
+    margin-bottom: 12px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    & button {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 15px;
+      width: 52px;
+      height: 48px;
+      background: #FFFFFF;
+      border: 1px solid #E2E3E5;
+      border-radius: 6px;
+    }
+    & button:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+  &__numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 232px;
+    height: 216px;
+    padding: 4px;
+    margin-bottom: 12px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    & button {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 15px;
+      width: 72px;
+      height: 48px;
+      background: #FFFFFF;
+      border: 1px solid #E2E3E5;
+      border-radius: 6px;
+    }
+  }
+  &__equals {
+    width: 232px;
+    height: 64px;
+    padding: 4px;
+    margin-bottom: 12px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    & button {
+      width: 232px;
+      height: 64px;
+      background: #5D5FEF;
+      border-radius: 6px;
+      border: none;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 15px;
+      color: #FFFFFF;
+    }
+  }
+}
+.drop {
+  box-shadow: none;
+  // display: none;
+}
+.noDrop {
+  box-shadow: none;
+  cursor: no-drop;
 }
