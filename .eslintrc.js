@@ -4,8 +4,12 @@ module.exports = {
     es2021: true
   },
   // root: true,
-  // parser: "@typescript-eslint/this.parser",
-  // plugin: "@typescript-eslint",
+  parser: "@typescript-eslint/parser",
+  // plugin: [
+    // "@typescript-eslint",
+  //   'react',
+  //   'react-hooks'
+  // ],
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
