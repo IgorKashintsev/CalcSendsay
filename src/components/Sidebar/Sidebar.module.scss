@@ -1,4 +1,5 @@
 .sidebar {
+  font-family: 'Inter';
   width: 240px;
   margin-top: 106px;
   margin-left: 76px;
@@ -10,22 +11,27 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    &__clone {
+      box-shadow: none;
+    }
+    &__noDrop {
+      box-shadow: none;
+      cursor: no-drop;
+    }
     &__in {
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
       align-items: center;
-      // gap: 10px;
       position: absolute;
       width: 232px;
       height: 52px;
       background: #F3F4F6;
       border-radius: 6px;
-      & span {
+      &__span {
         max-width: 220px;
         height: 44px;
         padding-right: 8px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 800;
         font-size: 36px;
@@ -37,6 +43,10 @@
         flex: none;
         order: 0;
         flex-grow: 0;
+        &__fontSize {
+          font-size: 19px;
+          line-height: 23px;
+        }
       }
     }
   }
@@ -48,6 +58,9 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    &__clone {
+      box-shadow: none;
+    }
     & button {
       font-weight: 500;
       font-size: 14px;
@@ -62,9 +75,15 @@
       margin-right: 8px;
     }
   }
+  &__operators__hover {
+    & button:hover {
+      border: 2px solid #5D5FEF;
+    }
+  }
   &__numbers {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    // display: grid;
+    // grid-template-columns: repeat(3, 1fr);
+    // gap: 8px;
     width: 232px;
     height: 216px;
     padding: 4px;
@@ -72,7 +91,38 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    & button {
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    &__clone {
+      box-shadow: none;
+    }
+    &__buttons {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 15px;
+      width: 72px;
+      height: 48px;
+      background: #FFFFFF;
+      border: 1px solid #E2E3E5;
+      border-radius: 6px;
+    }
+    &__zero {
+      margin-top: 8px;
+      margin-right: 8px;
+      width: 152px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 15px;
+      height: 48px;
+      background: #FFFFFF;
+      border: 1px solid #E2E3E5;
+      border-radius: 6px;
+    }
+    &__dot {
+      margin-top: 8px;
       font-weight: 500;
       font-size: 14px;
       line-height: 15px;
@@ -83,6 +133,11 @@
       border-radius: 6px;
     }
   }
+  &__numbers__hover {
+    & button:hover {
+      border: 2px solid #5D5FEF;
+    }
+  }
   &__equals {
     width: 232px;
     height: 64px;
@@ -91,6 +146,9 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    &__clone {
+      box-shadow: none;
+    }
     & button {
       width: 232px;
       height: 64px;
@@ -106,11 +164,61 @@
     }
   }
 }
-.drop {
+.dropElemNoShadow {
   box-shadow: none;
-  // display: none;
 }
-.noDrop {
-  box-shadow: none;
-  cursor: no-drop;
+.canvas {
+  font-family: 'Inter';
+  box-sizing: border-box;
+  position: absolute;
+  width: 243px;
+  height: 448px;
+  left: 372px;
+  top: 106px;
+  border: 2px dashed #C4C4C4;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  &__borderNone {
+    border: none;
+    box-shadow: none;
+  }
+  &__display {
+    height: 60px;
+    margin-bottom: 12px;
+  }
+  &__img {
+    pointer-events: none;
+    position: relative;
+    left: -5px;
+    top: -18px;
+    & img {
+      pointer-events: none;
+    }
+  }
+  &__imgDisplayNone {
+    display: none;
+  }
+  &__help {
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 120px;
+    &__p1 {
+      font-family: 'Inter';
+      font-weight: 500;
+      font-size: 14px;
+      color: #5D5FEF;
+      margin-top: 10px;
+    }
+    &__p2, &__p3 {
+      font-family: 'Inter';
+      font-size: 12px;
+      color: #6B7280;
+      margin-top: -12px;
+    }
+  }
+}
+.dropZone {
+  background: #F0F9FF;
 }

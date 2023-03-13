@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { Canvas } from './components/Canvas/Canvas';
 import { Sidebar } from './components/Sidebar/Sidebar';
+import { Switcher } from './components/Switcher';
 import { store } from './store';
 
 
@@ -12,7 +11,7 @@ export const App = () => {
     <>
       <Provider store={store}>
         <Sidebar />
-        <Canvas />
+        <Switcher />
       </Provider>
     </>
   );
