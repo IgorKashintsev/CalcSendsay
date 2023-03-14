@@ -1,18 +1,15 @@
 export interface SidebarState {
-  dropEl: HTMLDivElement | null;
-}
-export interface ButtonsState {
-  operators: string[];
-  numbers: number[];
-  operand1: string;
-  operand2: string;
-  operator: string;
-  result: string;
-}
-export interface CanvasState {
   htmlEl: HTMLDivElement[];
 }
-export interface Idx {
+export interface Idx1 {
+  idx1: number;
+  dropEl: HTMLDivElement;
+}
+export interface Idx2 {
   idx1: number;
   idx2: number;
+}
+export interface SwitcherState {
+  runtime: boolean;
+  constructor: boolean;
 }

@@ -26,6 +26,7 @@ module.exports = {
       src: path.resolve(__dirname, 'src'),
       store: path.resolve(__dirname, 'src/store'),
       types: path.resolve(__dirname, 'src/types'),
+      images: path.resolve(__dirname, 'images'),
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx']
   },

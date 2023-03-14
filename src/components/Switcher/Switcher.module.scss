@@ -1,0 +1,53 @@
+.switcher {
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15px;
+  position: absolute;
+  width: 243px;
+  height: 38px;
+  left: 372px;
+  top: 38px;
+  background: #F3F4F6;
+  border-radius: 6px;
+  &__runtime {
+    width: 108px;
+    height: 36px;
+    margin-top: 1px;
+    margin-left: 1px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    &__active {
+      background: #FFFFFF;
+      border: 1px solid #E2E3E5;
+    }
+    & img {
+      padding-right: 10px;
+      margin-top: 2px;
+    }
+    & span {
+      vertical-align: super;
+    }
+  }
+  &__constructor {
+    width: 133px;
+    height: 36px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    &__active {
+      background: #FFFFFF;
+      border: 1px solid #E2E3E5;
+    }
+    & img {
+      padding-right: 12px;
+      height: 18px;
+      width: 14px;
+      margin-top: 4px;
+    }
+    & span {
+      vertical-align: super;
+    }
+  }
+}
