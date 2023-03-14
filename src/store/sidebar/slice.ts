@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CanvasState, Idx2, Idx1 } from 'src/types';
+import { SidebarState, Idx2, Idx1 } from 'src/types';
 
-const initialState: CanvasState = {
+const initialState: SidebarState = {
   htmlEl: [],
 };
 
-const canvasSlice = createSlice({
-  name: 'canvas',
+const sidebarSlice = createSlice({
+  name: 'sidebar',
   initialState,
   reducers: {
     addListEl: (state, action: PayloadAction<HTMLDivElement>) => {
@@ -33,5 +33,5 @@ export const {
   replaceElementNew,
   replaceElement, 
   deleteElement 
-} = canvasSlice.actions;
-export const canvasReducer = canvasSlice.reducer;
+} = sidebarSlice.actions;
+export const sidebarReducer = sidebarSlice.reducer;

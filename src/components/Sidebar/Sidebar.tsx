@@ -1,7 +1,12 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectListEl } from 'src/store/canvas/selectors';
-import { addListEl, deleteElement, replaceElement, replaceElementNew } from 'src/store/canvas/slice';
+import { selectListEl } from 'src/store/sidebar/selectors';
+import { 
+  addListEl, 
+  deleteElement, 
+  replaceElement, 
+  replaceElementNew 
+} from 'src/store/sidebar/slice';
 import style from './Sidebar.module.scss';
 import imgVector from 'images/vector.svg';
 import imgGroup from 'images/group.svg';
@@ -19,10 +24,14 @@ export const Sidebar: FC = () => {
   const [visibleHelp, setVisibleHelp] = useState(true);
   const [dragEnter, setDragEnter] = useState(false);
   const [operand1, setOperand1] = useState<string>('0');
-  const [operand2, setOperand2] = useState<string>('0');
+  const [operand2, setOperand2] = useState<string>('');
   const [operator, setOperator] = useState<string>('');
   const [result, setResult] = useState<string>('0');
+  const [prevOperand2, setPrevOperand2] = useState<string>('');
+  const [prevOperator, setPrevOperator] = useState<string>('');
+  const [prevResult, setPrevResult] = useState<string>('0');
 
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const displayRef = useRef<HTMLDivElement>(null);
   const operatorsRef = useRef<HTMLDivElement>(null);
   const numbersRef = useRef<HTMLDivElement>(null);
@@ -129,7 +138,7 @@ export const Sidebar: FC = () => {
         displayWrapRef.current?.prepend(ev.currentTarget);
         displayRef.current?.classList.remove(`${style.sidebar__display__noDrop}`);
         setOperand1('0');
-        setOperand2('0');
+        setOperand2('');
         setOperator('');
         setResult('0');
       } break;
@@ -164,21 +173,52 @@ export const Sidebar: FC = () => {
 
   const handleClickOperators = (idOperator: string) => {
     if(runtime && visibleOperatorsClone && visibleDisplayClone) {
+      if(operand2 !== '') {
+        onResult();
+      }
       setOperator(idOperator);
+      setPrevOperator(idOperator);
     }
   };
 
-  const changeOperand = (id: string) => {
+  const changeOperand = (ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setPrevOperand2('');
+    setPrevOperator('');
     if(runtime && visibleNumbersClone && visibleDisplayClone) {
       if(operator === '') {
-        if(operand1.length < 17) {
-          setOperand1(operand1 + id);
-          setResult(operand1 + id);
+        if((ev.currentTarget.id === '.') && (operand1.indexOf('.') === -1)) {
+          setOperand1(operand1 + ev.currentTarget.id);
+          setResult(operand1 + ev.currentTarget.id);
+        } else if((ev.currentTarget.id === '.') && (operand1.indexOf('.') !== -1)) {
+          return;
+        } else if(operand1 === '0' && ev.currentTarget.id === '0') {
+          return;
+        } else if(operand1 === '0') {
+          setOperand1(ev.currentTarget.id);
+          setResult(ev.currentTarget.id);
+        } else if(operand1.length < 17) {
+          setOperand1(operand1 + ev.currentTarget.id);
+          setResult(operand1 + ev.currentTarget.id);
         }
       } else {
-        if(operand2.length < 17) {
-          setOperand2(operand2 + id);
-          setResult(operand2 + id);
+        if((ev.currentTarget.id === '.') && (operand2.indexOf('.') === -1)) {
+          if(operand2 === '') {
+            setOperand2('0' + ev.currentTarget.id);
+            setResult('0' + ev.currentTarget.id);
+          } else {
+            setOperand2(operand2 + ev.currentTarget.id);
+            setResult(operand2 + ev.currentTarget.id);
+          }
+        } else if((ev.currentTarget.id === '.') && (operand2.indexOf('.') !== -1)) {
+          return;
+        } else if(operand2 === '0' && ev.currentTarget.id === '0') {
+          return;
+        } else if(operand2 === '' || operand2 === '0') {
+          setOperand2(ev.currentTarget.id);
+          setResult(ev.currentTarget.id);
+        } else if(operand2.length < 17) {
+          setOperand2(operand2 + ev.currentTarget.id);
+          setResult(operand2 + ev.currentTarget.id);
         }
       }
     }
@@ -186,25 +226,123 @@ export const Sidebar: FC = () => {
 
   const onResult = () => {
     if(runtime && visibleEqualsClone && visibleDisplayClone) {
-      if(operand2 === '0' || operand2 === '00') {
+      if(prevOperand2 !== '' && prevOperand2 !== '0') {
+        switch(prevOperator) {
+        case '+': {
+          setResult((Number(result) + Number(prevOperand2)).toString());
+          setPrevResult((Number(result) + Number(prevOperand2)).toString());
+        } break;
+        case '-': {
+          setResult((Number(result) - Number(prevOperand2)).toString());
+          setPrevResult((Number(result) - Number(prevOperand2)).toString());
+        } break;
+        case '/': {
+          setResult((Number(result) / Number(prevOperand2)).toString());
+          setPrevResult((Number(result) / Number(prevOperand2)).toString());
+        } break;
+        case 'x': {
+          setResult((Number(result) * Number(prevOperand2)).toString());
+          setPrevResult((Number(result) * Number(prevOperand2)).toString());
+        } break;
+        }
+        return;
+      }
+      if(operand2 === '' && operator !== '') {
+        if(operand1 === '0' && operator === '/') {
+          setOperator('');
+          setResult('Не определено');
+        } else {
+          switch(operator) {
+          case '+': {
+            setResult((Number(operand1) + Number(operand1)).toString());
+            setPrevResult((Number(operand1) + Number(operand1)).toString());
+          } break;
+          case '-': {
+            setResult((Number(operand1) - Number(operand1)).toString());
+            setPrevResult((Number(operand1) - Number(operand1)).toString());
+          } break;
+          case '/': {
+            setResult((Number(operand1) / Number(operand1)).toString());
+            setPrevResult((Number(operand1) / Number(operand1)).toString());
+          } break;
+          case 'x': {
+            setResult((Number(operand1) * Number(operand1)).toString());
+            setPrevResult((Number(operand1) * Number(operand1)).toString());
+          } break;
+          }
+          setPrevOperand2(operand1);
+          setPrevOperator(operator);
+          setOperand1('0');
+          setOperand2('');
+          setOperator('');
+        }
+        return;
+      } else if(operand2 === '0' && operator === '/') {
+        setOperand1('0');
+        setOperand2('');
+        setOperator('');
         setResult('Не определено');
+        return;
+      }
+      if(operand1 === '0') {
+        switch(operator) {
+        case '+': {
+          setResult((Number(prevResult) + Number(operand2)).toString());
+          setPrevResult((Number(prevResult) + Number(operand2)).toString());          
+        } break;
+        case '-': {
+          setResult((Number(prevResult) - Number(operand2)).toString());
+          setPrevResult((Number(prevResult) - Number(operand2)).toString());
+        } break;
+        case '/': {
+          setResult((Number(prevResult) / Number(operand2)).toString());
+          setPrevResult((Number(prevResult) / Number(operand2)).toString());
+        } break;
+        case 'x': {
+          setResult((Number(prevResult) * Number(operand2)).toString());
+          setPrevResult((Number(prevResult) * Number(operand2)).toString());
+        } break;
+        }
+        setPrevOperand2(operand2);
+        setPrevOperator(operator);
+        setOperand1('0');
+        setOperand2('');
+        setOperator('');
+        return;
       }
       switch(operator) {
-      case '+': setResult((Number(operand1) + Number(operand2)).toString()); break;
-      case '-': setResult((Number(operand1) - Number(operand2)).toString()); break;
-      case '/': setResult((Number(operand1) / Number(operand2)).toString()); break;
-      case 'x': setResult((Number(operand1) * Number(operand2)).toString()); break;
+      case '+': {
+        setResult((Number(operand1) + Number(operand2)).toString());
+        setPrevResult((Number(operand1) + Number(operand2)).toString());
+      } break;
+      case '-': {
+        setResult((Number(operand1) - Number(operand2)).toString());
+        setPrevResult((Number(operand1) - Number(operand2)).toString());
+      } break;
+      case '/': {
+        setResult((Number(operand1) / Number(operand2)).toString());
+        setPrevResult((Number(operand1) / Number(operand2)).toString());
+      } break;
+      case 'x': {
+        setResult((Number(operand1) * Number(operand2)).toString());
+        setPrevResult((Number(operand1) * Number(operand2)).toString());
+      } break;
       }
+      setPrevOperand2(operand2);
+      setPrevOperator(operator);
+      setOperand1('0');
+      setOperand2('');
+      setOperator('');
     }
   };
 
   useEffect(() => {
-    if(result.length > 8) {
+    if(result.length > 9) {
       displaySpanRef.current?.classList.add(`${style.sidebar__display__in__span__fontSize}`);
       if(Number(result) < 1 && result.length > 17) {
         setResult(Number(result).toFixed(16));
-      } else if(Number(result) > 1 && result.length > 17) {
-        setResult(result.substring(0, 17));
+      } else if(Number(result) > 1 && result.length > 16) {
+        setResult(result.substring(0, 16));
       }
     } else {
       displaySpanRef.current?.classList.remove(`${style.sidebar__display__in__span__fontSize}`);
@@ -225,16 +363,19 @@ export const Sidebar: FC = () => {
 
   useEffect(() => {
     setOperand1('0');
-    setOperand2('0');
+    setOperand2('');
     setOperator('');
     setResult('0');
+    setPrevOperand2('');
+    setPrevOperator('');
+    setPrevResult('0');
     if(runtime) {
       setVisibleHelp(false);
       dropContainer.current?.classList.add(`${style.canvas__borderNone}`);
-      displayRef.current!.draggable = false;
       operatorsRef.current!.draggable = false;
       numbersRef.current!.draggable = false;
       equalsRef.current!.draggable = false;
+      sidebarRef.current?.classList.add(`${style.sidebar__displayNone}`);
       if(visibleOperatorsClone) {
         operatorsRef.current?.classList.add(`${style.sidebar__operators__hover}`);
       }
@@ -242,12 +383,12 @@ export const Sidebar: FC = () => {
         numbersRef.current?.classList.add(`${style.sidebar__numbers__hover}`);
       }
     } else if(constructor) {
-      displayRef.current!.draggable = true;
       operatorsRef.current!.draggable = true;
       numbersRef.current!.draggable = true;
       equalsRef.current!.draggable = true;
       operatorsRef.current?.classList.remove(`${style.sidebar__operators__hover}`);
       numbersRef.current?.classList.remove(`${style.sidebar__numbers__hover}`);
+      sidebarRef.current?.classList.remove(`${style.sidebar__displayNone}`);
     }
   }, [runtime, constructor]);
 
@@ -268,7 +409,9 @@ export const Sidebar: FC = () => {
 
   return(
     <>
-      <div className={style.sidebar}>
+      <div 
+        ref={sidebarRef}
+        className={style.sidebar}>
         <div ref={displayWrapRef}>
           <div 
             ref={displayRef}
@@ -280,7 +423,10 @@ export const Sidebar: FC = () => {
             onDoubleClick={(ev) => handleClickDelete(ev)}
           >
             <div className={style.sidebar__display__in}>
-              <span ref={displaySpanRef} className={style.sidebar__display__in__span}>{result}</span>
+              <span 
+                ref={displaySpanRef} 
+                className={style.sidebar__display__in__span}
+              >{result}</span>
             </div>
           </div>
           {visibleDisplayClone &&
@@ -315,7 +461,11 @@ export const Sidebar: FC = () => {
             onDoubleClick={(ev) => handleClickDelete(ev)}
           >
             {operators.map((item) => (
-              <button id={item} key={item} onClick={() => handleClickOperators(item)}>{item}</button>
+              <button 
+                id={item} 
+                key={item} 
+                onClick={() => handleClickOperators(item)}
+              >{item}</button>
             ))}
           </div>
         </div>
@@ -351,19 +501,21 @@ export const Sidebar: FC = () => {
               {numbers.map((item) => (
                 <button 
                   className={style.sidebar__numbers__buttons} 
-                  id={item.toString()} key={item} onClick={() => changeOperand(item.toString())}
+                  id={item.toString()} 
+                  key={item} 
+                  onClick={(ev) => changeOperand(ev)}
                 >{item}</button>
               ))}
             </div>
             <button 
               id='0' 
               className={style.sidebar__numbers__zero} 
-              onClick={(ev) => changeOperand(ev.currentTarget.id)}
+              onClick={(ev) => changeOperand(ev)}
             >0</button>
             <button 
               className={style.sidebar__numbers__dot} 
               id='.' 
-              onClick={(ev) => changeOperand(ev.currentTarget.id)}
+              onClick={(ev) => changeOperand(ev)}
             >,</button>
           </div>
         </div>

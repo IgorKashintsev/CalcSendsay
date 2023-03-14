@@ -1,4 +1,4 @@
-export interface CanvasState {
+export interface SidebarState {
   htmlEl: HTMLDivElement[];
 }
 export interface Idx1 {

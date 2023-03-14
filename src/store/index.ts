@@ -1,9 +1,9 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { canvasReducer } from './canvas/slice';
+import { sidebarReducer } from './sidebar/slice';
 import { switcherReducer } from './switcher/slice';
 
 const rootReducer = combineReducers({
-  canvas: canvasReducer,
+  sidebar: sidebarReducer,
   switcher: switcherReducer,
 });
 

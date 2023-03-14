@@ -3,6 +3,9 @@
   width: 240px;
   margin-top: 106px;
   margin-left: 76px;
+  &__displayNone {
+    display: none;
+  }
   &__display {
     width: 232px;
     height: 52px;
@@ -13,6 +16,7 @@
     border-radius: 4px;
     &__clone {
       box-shadow: none;
+      opacity: 0.5;
     }
     &__noDrop {
       box-shadow: none;
@@ -60,6 +64,7 @@
     border-radius: 4px;
     &__clone {
       box-shadow: none;
+      opacity: 0.5;
     }
     & button {
       font-weight: 500;
@@ -98,6 +103,7 @@
     }
     &__clone {
       box-shadow: none;
+      opacity: 0.5;
     }
     &__buttons {
       font-weight: 500;
@@ -148,6 +154,7 @@
     border-radius: 4px;
     &__clone {
       box-shadow: none;
+      opacity: 0.5;
     }
     & button {
       width: 232px;
@@ -183,7 +190,7 @@
     box-shadow: none;
   }
   &__display {
-    height: 60px;
+    // height: 60px;
     margin-bottom: 12px;
   }
   &__img {
