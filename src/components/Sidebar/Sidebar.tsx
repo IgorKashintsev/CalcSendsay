@@ -44,7 +44,11 @@ export const Sidebar: FC = () => {
   const dropDisplay = useRef<HTMLDivElement>(null);
   const dropOperators = useRef<HTMLDivElement>(null);
   const imageCanvasRef = useRef<HTMLDivElement>(null);
+  const imageCanvasReplaceRef = useRef<HTMLDivElement>(null);
+  const imageDisplayRef = useRef<HTMLDivElement>(null);
   const imageOperatorsRef = useRef<HTMLDivElement>(null);
+  const imageNumbersRef = useRef<HTMLDivElement>(null);
+  const imageEqualsRef = useRef<HTMLDivElement>(null);
   const displaySpanRef = useRef<HTMLDivElement>(null);
 
   const listDropEl = useSelector(selectListEl);
@@ -53,9 +57,9 @@ export const Sidebar: FC = () => {
 
   const dispatch = useDispatch();
 
-  const onDrop = () => {   
+  const onDropCanvas = () => {   
     dropContainer.current?.classList.remove(`${style.dropZone}`);
-    imageCanvasRef.current?.classList.add(`${style.canvas__imgDisplayNone}`);
+    imageCanvasRef.current?.classList.add(`${style.canvas__imgDropDisplayNone}`);
     const idx = listDropEl.findIndex(item => item.id === dropEl?.id);
     if(dropEl!.id === 'display') {
       dropEl!.draggable = false;
@@ -83,11 +87,11 @@ export const Sidebar: FC = () => {
 
   const onDrop2 = (ev: React.DragEvent<HTMLDivElement>) => {
     dropContainer.current?.classList.remove(`${style.dropZone}`);
-    imageCanvasRef.current?.classList.add(`${style.canvas__imgDisplayNone}`);
+    imageCanvasRef.current?.classList.add(`${style.canvas__imgDropDisplayNone}`);
     const idxDropEl = listDropEl.findIndex(item => item.id === dropEl?.id);
-    const idx2 = listDropEl.findIndex(item => item.id === ev.currentTarget.id);
-    if(dragEnter && (idxDropEl === -1) && (dropEl?.id !== 'display')) { 
-      dispatch(replaceElementNew({idx1: idx2, dropEl: dropEl!}));
+    const idxOnDropEl = listDropEl.findIndex(item => item.id === ev.currentTarget.id);
+    if(dragEnter && (idxDropEl === -1)) { 
+      dispatch(replaceElementNew({idx1: idxOnDropEl, dropEl: dropEl!}));
       switch(dropEl!.id) {
       case 'operators': {
         setVisibleOperatorsClone(true);
@@ -103,27 +107,80 @@ export const Sidebar: FC = () => {
       }break;
       }
     } else if(dragEnter && (idxDropEl !== -1)) {
-      dispatch(replaceElement({idx1: idxDropEl, idx2: idx2}));
-    } else if(dropEl?.id === 'display') {
+      dispatch(replaceElement({idx1: idxDropEl, idx2: idxOnDropEl}));
+    } else if(dropEl?.id === 'display' && (idxOnDropEl !== -1)) {
       dropEl!.draggable = false;
       displayRef.current?.classList.add(`${style.sidebar__display__noDrop}`);
       dropDisplay.current?.append(dropEl!);
       setVisibleDisplayClone(true);
     }
+    if(idxOnDropEl !== -1) {
+      onAddClassLeaveEl(idxOnDropEl);
+    }
   };
 
   const onDragEnter = (ev: React.DragEvent<HTMLDivElement>) => {
-    const idx = listDropEl.findIndex(item => item.id === ev.currentTarget.id);
-    if(idx !== -1) {
+    const idxOnDragEl = listDropEl.findIndex(item => item.id === ev.currentTarget.id);
+    if(idxOnDragEl !== -1 && (dropEl?.id !== 'display')) {
       setDragEnter(true);
-      switch(ev.currentTarget.id) {
-      case 'operators': {
-        imageOperatorsRef.current?.classList
-          .remove(`${style.sidebar__operators__imgDisplayNone}`);
-      } break;
+      if(idxOnDragEl === 0 && visibleDisplayClone) {
+        imageDisplayRef.current?.classList
+          .remove(`${style.sidebar__display__imgReplaceDisplayNone}`);
+      } else if(idxOnDragEl === 0 && !visibleDisplayClone) {
+        imageCanvasReplaceRef.current?.classList
+          .remove(`${style.canvas__imgReplaceDisplayNone}`);
+      } else if(listDropEl.length > 1) {
+        const prevEl = listDropEl[idxOnDragEl - 1];
+        switch(prevEl.id) {
+        case 'operators': {
+          imageOperatorsRef.current?.classList
+            .remove(`${style.sidebar__operators__imgReplaceDisplayNone}`);
+        } break;
+        case 'numbers': {
+          imageNumbersRef.current?.classList
+            .remove(`${style.sidebar__numbers__imgReplaceDisplayNone}`);
+        } break;
+        case 'equals': {
+          imageEqualsRef.current?.classList
+            .remove(`${style.sidebar__equals__imgReplaceDisplayNone}`);
+        } break;
+        }
       }
     } else {
       setDragEnter(false);
+    }
+  };
+
+  const onDragLeave = (ev: React.DragEvent<HTMLDivElement>) => {
+    const idxLeaveEl = listDropEl.findIndex(item => item.id === ev.currentTarget.id);
+    if(idxLeaveEl !== -1) {
+      onAddClassLeaveEl(idxLeaveEl);
+    }
+  };
+
+  const onAddClassLeaveEl = (idxLeaveEl: number) => {
+    if(idxLeaveEl === 0 && visibleDisplayClone) {
+      imageDisplayRef.current?.classList
+        .add(`${style.sidebar__display__imgReplaceDisplayNone}`);
+    } else if(idxLeaveEl === 0 && !visibleDisplayClone) {
+      imageCanvasReplaceRef.current?.classList
+        .add(`${style.canvas__imgReplaceDisplayNone}`);
+    } else if(listDropEl.length > 1) {
+      const prevEl = listDropEl[idxLeaveEl - 1];
+      switch(prevEl.id) {
+      case 'operators': {
+        imageOperatorsRef.current?.classList
+          .add(`${style.sidebar__operators__imgReplaceDisplayNone}`);
+      } break;
+      case 'numbers': {
+        imageNumbersRef.current?.classList
+          .add(`${style.sidebar__numbers__imgReplaceDisplayNone}`);
+      } break;
+      case 'equals': {
+        imageEqualsRef.current?.classList
+          .add(`${style.sidebar__equals__imgReplaceDisplayNone}`);
+      } break;
+      }
     }
   };
 
@@ -186,10 +243,10 @@ export const Sidebar: FC = () => {
     setPrevOperator('');
     if(runtime && visibleNumbersClone && visibleDisplayClone) {
       if(operator === '') {
-        if((ev.currentTarget.id === '.') && (operand1.indexOf('.') === -1)) {
+        if((ev.currentTarget.id === ',') && (operand1.indexOf(',') === -1)) {
           setOperand1(operand1 + ev.currentTarget.id);
           setResult(operand1 + ev.currentTarget.id);
-        } else if((ev.currentTarget.id === '.') && (operand1.indexOf('.') !== -1)) {
+        } else if((ev.currentTarget.id === ',') && (operand1.indexOf(',') !== -1)) {
           return;
         } else if(operand1 === '0' && ev.currentTarget.id === '0') {
           return;
@@ -201,7 +258,7 @@ export const Sidebar: FC = () => {
           setResult(operand1 + ev.currentTarget.id);
         }
       } else {
-        if((ev.currentTarget.id === '.') && (operand2.indexOf('.') === -1)) {
+        if((ev.currentTarget.id === ',') && (operand2.indexOf(',') === -1)) {
           if(operand2 === '') {
             setOperand2('0' + ev.currentTarget.id);
             setResult('0' + ev.currentTarget.id);
@@ -209,7 +266,7 @@ export const Sidebar: FC = () => {
             setOperand2(operand2 + ev.currentTarget.id);
             setResult(operand2 + ev.currentTarget.id);
           }
-        } else if((ev.currentTarget.id === '.') && (operand2.indexOf('.') !== -1)) {
+        } else if((ev.currentTarget.id === ',') && (operand2.indexOf(',') !== -1)) {
           return;
         } else if(operand2 === '0' && ev.currentTarget.id === '0') {
           return;
@@ -229,20 +286,52 @@ export const Sidebar: FC = () => {
       if(prevOperand2 !== '' && prevOperand2 !== '0') {
         switch(prevOperator) {
         case '+': {
-          setResult((Number(result) + Number(prevOperand2)).toString());
-          setPrevResult((Number(result) + Number(prevOperand2)).toString());
+          setResult(
+            (Number(result.replace(/[,]/g, '.')) +
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(result.replace(/[,]/g, '.')) +
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
         } break;
         case '-': {
-          setResult((Number(result) - Number(prevOperand2)).toString());
-          setPrevResult((Number(result) - Number(prevOperand2)).toString());
+          setResult(
+            (Number(result.replace(/[,]/g, '.')) -
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(result.replace(/[,]/g, '.')) -
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
         } break;
         case '/': {
-          setResult((Number(result) / Number(prevOperand2)).toString());
-          setPrevResult((Number(result) / Number(prevOperand2)).toString());
+          setResult(
+            (Number(result.replace(/[,]/g, '.')) /
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(result.replace(/[,]/g, '.')) /
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
         } break;
         case 'x': {
-          setResult((Number(result) * Number(prevOperand2)).toString());
-          setPrevResult((Number(result) * Number(prevOperand2)).toString());
+          setResult(
+            (Number(result.replace(/[,]/g, '.')) *
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(result.replace(/[,]/g, '.')) *
+              Number(prevOperand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
         } break;
         }
         return;
@@ -254,20 +343,52 @@ export const Sidebar: FC = () => {
         } else {
           switch(operator) {
           case '+': {
-            setResult((Number(operand1) + Number(operand1)).toString());
-            setPrevResult((Number(operand1) + Number(operand1)).toString());
+            setResult(
+              (Number(operand1.replace(/[,]/g, '.')) + 
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
+            setPrevResult(
+              (Number(operand1.replace(/[,]/g, '.')) + 
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
           } break;
           case '-': {
-            setResult((Number(operand1) - Number(operand1)).toString());
-            setPrevResult((Number(operand1) - Number(operand1)).toString());
+            setResult(
+              (Number(operand1.replace(/[,]/g, '.')) -
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
+            setPrevResult(
+              (Number(operand1.replace(/[,]/g, '.')) -
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
           } break;
           case '/': {
-            setResult((Number(operand1) / Number(operand1)).toString());
-            setPrevResult((Number(operand1) / Number(operand1)).toString());
+            setResult(
+              (Number(operand1.replace(/[,]/g, '.')) /
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
+            setPrevResult(
+              (Number(operand1.replace(/[,]/g, '.')) /
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
           } break;
           case 'x': {
-            setResult((Number(operand1) * Number(operand1)).toString());
-            setPrevResult((Number(operand1) * Number(operand1)).toString());
+            setResult(
+              (Number(operand1.replace(/[,]/g, '.')) *
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
+            setPrevResult(
+              (Number(operand1.replace(/[,]/g, '.')) *
+                Number(operand1.replace(/[,]/g, '.')))
+                .toString().replace(/[.]/g, ',')
+            );
           } break;
           }
           setPrevOperand2(operand1);
@@ -287,20 +408,52 @@ export const Sidebar: FC = () => {
       if(operand1 === '0') {
         switch(operator) {
         case '+': {
-          setResult((Number(prevResult) + Number(operand2)).toString());
-          setPrevResult((Number(prevResult) + Number(operand2)).toString());          
+          setResult(
+            (Number(prevResult.replace(/[,]/g, '.')) + 
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(prevResult.replace(/[,]/g, '.')) + 
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );          
         } break;
         case '-': {
-          setResult((Number(prevResult) - Number(operand2)).toString());
-          setPrevResult((Number(prevResult) - Number(operand2)).toString());
+          setResult(
+            (Number(prevResult.replace(/[,]/g, '.')) -
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(prevResult.replace(/[,]/g, '.')) -
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
         } break;
         case '/': {
-          setResult((Number(prevResult) / Number(operand2)).toString());
-          setPrevResult((Number(prevResult) / Number(operand2)).toString());
+          setResult(
+            (Number(prevResult.replace(/[,]/g, '.')) /
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(prevResult.replace(/[,]/g, '.')) /
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
         } break;
         case 'x': {
-          setResult((Number(prevResult) * Number(operand2)).toString());
-          setPrevResult((Number(prevResult) * Number(operand2)).toString());
+          setResult(
+            (Number(prevResult.replace(/[,]/g, '.')) *
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
+          setPrevResult(
+            (Number(prevResult.replace(/[,]/g, '.')) *
+              Number(operand2.replace(/[,]/g, '.')))
+              .toString().replace(/[.]/g, ',')
+          );
         } break;
         }
         setPrevOperand2(operand2);
@@ -312,20 +465,52 @@ export const Sidebar: FC = () => {
       }
       switch(operator) {
       case '+': {
-        setResult((Number(operand1) + Number(operand2)).toString());
-        setPrevResult((Number(operand1) + Number(operand2)).toString());
+        setResult(
+          (Number(operand1.replace(/[,]/g, '.')) + 
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
+        setPrevResult(
+          (Number(operand1.replace(/[,]/g, '.')) + 
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
       } break;
       case '-': {
-        setResult((Number(operand1) - Number(operand2)).toString());
-        setPrevResult((Number(operand1) - Number(operand2)).toString());
+        setResult(
+          (Number(operand1.replace(/[,]/g, '.')) - 
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
+        setPrevResult(
+          (Number(operand1.replace(/[,]/g, '.')) - 
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
       } break;
       case '/': {
-        setResult((Number(operand1) / Number(operand2)).toString());
-        setPrevResult((Number(operand1) / Number(operand2)).toString());
+        setResult(
+          (Number(operand1.replace(/[,]/g, '.')) /
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
+        setPrevResult(
+          (Number(operand1.replace(/[,]/g, '.')) /
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
       } break;
       case 'x': {
-        setResult((Number(operand1) * Number(operand2)).toString());
-        setPrevResult((Number(operand1) * Number(operand2)).toString());
+        setResult(
+          (Number(operand1.replace(/[,]/g, '.')) *
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
+        setPrevResult(
+          (Number(operand1.replace(/[,]/g, '.')) *
+            Number(operand2.replace(/[,]/g, '.')))
+            .toString().replace(/[.]/g, ',')
+        );
       } break;
       }
       setPrevOperand2(operand2);
@@ -338,14 +523,16 @@ export const Sidebar: FC = () => {
 
   useEffect(() => {
     if(result.length > 9) {
-      displaySpanRef.current?.classList.add(`${style.sidebar__display__in__span__fontSize}`);
+      displaySpanRef.current?.classList
+        .add(`${style.sidebar__display__in__span__fontSize}`);
       if(Number(result) < 1 && result.length > 17) {
         setResult(Number(result).toFixed(16));
       } else if(Number(result) > 1 && result.length > 16) {
         setResult(result.substring(0, 16));
       }
     } else {
-      displaySpanRef.current?.classList.remove(`${style.sidebar__display__in__span__fontSize}`);
+      displaySpanRef.current?.classList
+        .remove(`${style.sidebar__display__in__span__fontSize}`);
     }
   }, [result]);
 
@@ -376,6 +563,12 @@ export const Sidebar: FC = () => {
       numbersRef.current!.draggable = false;
       equalsRef.current!.draggable = false;
       sidebarRef.current?.classList.add(`${style.sidebar__displayNone}`);
+      Array.from(operatorsRef.current!.getElementsByTagName('button'))
+        .forEach(el => el.classList.remove(`${style.pointer}`));
+      Array.from(numbersRef.current!.children)
+        .forEach(el => el.classList.remove(`${style.pointer}`));
+      Array.from(equalsRef.current!.getElementsByTagName('button'))
+        .forEach(el => el.classList.remove(`${style.pointer}`));
       if(visibleOperatorsClone) {
         operatorsRef.current?.classList.add(`${style.sidebar__operators__hover}`);
       }
@@ -389,6 +582,12 @@ export const Sidebar: FC = () => {
       operatorsRef.current?.classList.remove(`${style.sidebar__operators__hover}`);
       numbersRef.current?.classList.remove(`${style.sidebar__numbers__hover}`);
       sidebarRef.current?.classList.remove(`${style.sidebar__displayNone}`);
+      Array.from(operatorsRef.current!.getElementsByTagName('button'))
+        .forEach(el => el.classList.add(`${style.pointer}`));
+      Array.from(numbersRef.current!.children)
+        .forEach(el => el.classList.add(`${style.pointer}`));
+      Array.from(equalsRef.current!.getElementsByTagName('button'))
+        .forEach(el => el.classList.add(`${style.pointer}`));
     }
   }, [runtime, constructor]);
 
@@ -396,15 +595,17 @@ export const Sidebar: FC = () => {
     if(listDropEl.length < 1 && !visibleDisplayClone) {
       dropContainer.current?.classList.add(`${style.dropZone}`);
     }
-    imageCanvasRef.current?.classList.remove(`${style.canvas__imgDisplayNone}`);
+    if(listDropEl.length < 3) {
+      imageCanvasRef.current?.classList.remove(`${style.canvas__imgDropDisplayNone}`);
+    }
     if(dropEl?.id === 'display') {
-      imageCanvasRef.current?.classList.add(`${style.canvas__imgDisplayNone}`);
+      imageCanvasRef.current?.classList.add(`${style.canvas__imgDropDisplayNone}`);
     }
   };
 
   const onLeaveDropContainer = () => {
     dropContainer.current?.classList.remove(`${style.dropZone}`);
-    imageCanvasRef.current?.classList.add(`${style.canvas__imgDisplayNone}`);
+    imageCanvasRef.current?.classList.add(`${style.canvas__imgDropDisplayNone}`);
   };
 
   return(
@@ -428,10 +629,22 @@ export const Sidebar: FC = () => {
                 className={style.sidebar__display__in__span}
               >{result}</span>
             </div>
+            <div
+              ref={imageDisplayRef}
+              className={`
+                ${style.sidebar__display__imgReplace} 
+                ${style.sidebar__display__imgReplaceDisplayNone}
+              `}
+            >
+              <img src={imgVector} alt="vector" />
+            </div>
           </div>
           {visibleDisplayClone &&
             <div 
-              className={`${style.sidebar__display} ${style.sidebar__display__clone}`}
+              className={`
+                ${style.sidebar__display} 
+                ${style.sidebar__display__clone}
+              `}
             >
               <div className={style.sidebar__display__in}>
                 <span className={style.sidebar__display__in__span}>0</span>
@@ -442,37 +655,55 @@ export const Sidebar: FC = () => {
         <div ref={operatorsWrapRef}>
           {visibleOperatorsClone && 
             <div 
-              className={`${style.sidebar__operators} ${style.sidebar__operators__clone}`}
+              className={`
+                ${style.sidebar__operators} 
+                ${style.sidebar__operators__clone}
+              `}
             >
               {operators.map((item) => (
                 <button key={item} >{item}</button>
               ))}
             </div>
           }
-          <div 
-            ref={operatorsRef}
-            className={style.sidebar__operators}
-            id='operators'
-            onDragStart={(ev) => setDropEl(ev.currentTarget)}
-            draggable="true" 
-            onDragOver={(ev) => ev.preventDefault()}
-            onDragEnter={(ev) => onDragEnter(ev)}
-            onDrop={(ev) => onDrop2(ev)}
-            onDoubleClick={(ev) => handleClickDelete(ev)}
-          >
-            {operators.map((item) => (
-              <button 
-                id={item} 
-                key={item} 
-                onClick={() => handleClickOperators(item)}
-              >{item}</button>
-            ))}
+          <div>
+            <div 
+              ref={operatorsRef}
+              className={style.sidebar__operators}
+              id='operators'
+              onDragStart={(ev) => setDropEl(ev.currentTarget)}
+              draggable="true" 
+              onDragOver={(ev) => ev.preventDefault()}
+              onDragEnter={(ev) => onDragEnter(ev)}
+              onDragLeave={(ev) => onDragLeave(ev)}
+              onDrop={(ev) => onDrop2(ev)}
+              onDoubleClick={(ev) => handleClickDelete(ev)}
+            >
+              {operators.map((item) => (
+                <button 
+                  id={item} 
+                  key={item} 
+                  onClick={() => handleClickOperators(item)}
+                >{item}</button>
+              ))}
+              <div 
+                ref={imageOperatorsRef}
+                className={`
+                  ${style.sidebar__operators__imgReplace} 
+                  ${style.sidebar__operators__imgReplaceDisplayNone}
+                `}
+              >
+                <img src={imgVector} alt="vector" />
+              </div>
+            </div>
           </div>
         </div>
         <div ref={numbersWrapRef}>
           {visibleNumbersClone &&
             <div 
-              className={`${style.sidebar__numbers} ${style.sidebar__numbers__clone}`}
+              className={`
+                ${style.sidebar__numbers} 
+                ${style.sidebar__numbers__clone}
+              `}
             >
               <div className={style.sidebar__numbers__grid}>
                 {numbers.map((item) => (
@@ -494,6 +725,7 @@ export const Sidebar: FC = () => {
             draggable="true" 
             onDragOver={(ev) => ev.preventDefault()}
             onDragEnter={(ev) => onDragEnter(ev)}
+            onDragLeave={(ev) => onDragLeave(ev)}
             onDrop={(ev) => onDrop2(ev)}
             onDoubleClick={(ev) => handleClickDelete(ev)}
           >
@@ -514,15 +746,27 @@ export const Sidebar: FC = () => {
             >0</button>
             <button 
               className={style.sidebar__numbers__dot} 
-              id='.' 
+              id=',' 
               onClick={(ev) => changeOperand(ev)}
             >,</button>
+            <div
+              ref={imageNumbersRef}
+              className={`
+                ${style.sidebar__numbers__imgReplace} 
+                ${style.sidebar__numbers__imgReplaceDisplayNone}
+              `}
+            >
+              <img src={imgVector} alt="vector" />
+            </div>
           </div>
         </div>
         <div ref={equalsWrapRef}>
           {visibleEqualsClone &&
             <div 
-              className={`${style.sidebar__equals} ${style.sidebar__equals__clone}`}
+              className={`
+                ${style.sidebar__equals} 
+                ${style.sidebar__equals__clone}
+              `}
             >
               <button>=</button>
             </div>
@@ -535,10 +779,20 @@ export const Sidebar: FC = () => {
             draggable="true" 
             onDragOver={(ev) => ev.preventDefault()}
             onDragEnter={(ev) => onDragEnter(ev)}
+            onDragLeave={(ev) => onDragLeave(ev)}
             onDrop={(ev) => onDrop2(ev)}
             onDoubleClick={(ev) => handleClickDelete(ev)}
           >
             <button id='=' onClick={onResult}>=</button>
+            <div
+              ref={imageEqualsRef}
+              className={`
+                ${style.sidebar__equals__imgReplace} 
+                ${style.sidebar__equals__imgReplaceDisplayNone}
+              `}
+            >
+              <img src={imgVector} alt="vector" />
+            </div>
           </div>
         </div>
       </div>
@@ -548,8 +802,18 @@ export const Sidebar: FC = () => {
         onDragOver={(ev) => ev.preventDefault()}
         onDragEnter={onHoverDropContainer}
         onDragLeave={onLeaveDropContainer}
-        onDrop={onDrop}
+        onDrop={onDropCanvas}
       >
+        <div
+          ref={imageCanvasReplaceRef}
+          className={`
+            ${style.canvas__imgReplace} 
+            ${style.canvas__imgReplaceDisplayNone}
+          `}
+        >
+          <img src={imgVector}
+          ></img>
+        </div>
         <div
           ref={dropDisplay}
           className={style.canvas__display}
@@ -560,7 +824,10 @@ export const Sidebar: FC = () => {
         ></div>
         <div
           ref={imageCanvasRef}
-          className={`${style.canvas__img} ${style.canvas__imgDisplayNone}`}
+          className={`
+            ${style.canvas__imgDrop} 
+            ${style.canvas__imgDropDisplayNone}
+          `}
         >
           <img src={imgVector}
           ></img>

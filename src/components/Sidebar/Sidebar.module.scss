@@ -22,6 +22,18 @@
       box-shadow: none;
       cursor: no-drop;
     }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: 49px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
+    }
     &__in {
       display: flex;
       flex-direction: row;
@@ -66,6 +78,18 @@
       box-shadow: none;
       opacity: 0.5;
     }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: -2px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
+    }
     & button {
       font-weight: 500;
       font-size: 14px;
@@ -76,7 +100,7 @@
       border: 1px solid #E2E3E5;
       border-radius: 6px;
     }
-    & button:not(:last-child) {
+    & button:nth-child(-n + 3) {
       margin-right: 8px;
     }
   }
@@ -86,9 +110,6 @@
     }
   }
   &__numbers {
-    // display: grid;
-    // grid-template-columns: repeat(3, 1fr);
-    // gap: 8px;
     width: 232px;
     height: 216px;
     padding: 4px;
@@ -105,38 +126,38 @@
       box-shadow: none;
       opacity: 0.5;
     }
-    &__buttons {
+    & button {
       font-weight: 500;
       font-size: 14px;
       line-height: 15px;
-      width: 72px;
       height: 48px;
       background: #FFFFFF;
       border: 1px solid #E2E3E5;
       border-radius: 6px;
+    }
+    &__buttons {
+      width: 72px;
     }
     &__zero {
       margin-top: 8px;
       margin-right: 8px;
       width: 152px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 15px;
-      height: 48px;
-      background: #FFFFFF;
-      border: 1px solid #E2E3E5;
-      border-radius: 6px;
     }
     &__dot {
       margin-top: 8px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 15px;
       width: 72px;
-      height: 48px;
-      background: #FFFFFF;
-      border: 1px solid #E2E3E5;
-      border-radius: 6px;
+    }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: -2px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
     }
   }
   &__numbers__hover {
@@ -169,6 +190,18 @@
       line-height: 15px;
       color: #FFFFFF;
     }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: -2px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
+    }
   }
 }
 .dropElemNoShadow {
@@ -193,7 +226,7 @@
     // height: 60px;
     margin-bottom: 12px;
   }
-  &__img {
+  &__imgDrop {
     pointer-events: none;
     position: relative;
     left: -5px;
@@ -202,7 +235,19 @@
       pointer-events: none;
     }
   }
-  &__imgDisplayNone {
+  &__imgDropDisplayNone {
+    display: none;
+  }
+  &__imgReplace {
+    pointer-events: none;
+    position: absolute;
+    left: -5px;
+    top: -6px;
+    & img {
+      pointer-events: none;
+    }
+  }
+  &__imgReplaceDisplayNone {
     display: none;
   }
   &__help {
@@ -210,7 +255,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 120px;
+    margin-top: 182px;
     &__p1 {
       font-family: 'Inter';
       font-weight: 500;
@@ -228,4 +273,7 @@
 }
 .dropZone {
   background: #F0F9FF;
+}
+.pointer {
+  pointer-events: none;
 }
