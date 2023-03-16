@@ -1,3 +1,3 @@
-import { StoreState } from "..";
+import { StoreState } from '..';
 
-export const selectDropEl = (state: StoreState) => state.sidebar.dropEl;
+export const selectListEl = (state: StoreState) => state.sidebar.htmlEl;

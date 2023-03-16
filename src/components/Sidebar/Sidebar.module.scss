@@ -1,7 +1,11 @@
 .sidebar {
+  font-family: 'Inter';
   width: 240px;
   margin-top: 106px;
   margin-left: 76px;
+  &__displayNone {
+    display: none;
+  }
   &__display {
     width: 232px;
     height: 52px;
@@ -10,22 +14,40 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    &__clone {
+      box-shadow: none;
+      opacity: 0.5;
+    }
+    &__noDrop {
+      box-shadow: none;
+      cursor: no-drop;
+    }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: 49px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
+    }
     &__in {
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
       align-items: center;
-      // gap: 10px;
       position: absolute;
       width: 232px;
       height: 52px;
       background: #F3F4F6;
       border-radius: 6px;
-      & span {
+      &__span {
         max-width: 220px;
         height: 44px;
         padding-right: 8px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 800;
         font-size: 36px;
@@ -37,6 +59,10 @@
         flex: none;
         order: 0;
         flex-grow: 0;
+        &__fontSize {
+          font-size: 19px;
+          line-height: 23px;
+        }
       }
     }
   }
@@ -48,6 +74,22 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    &__clone {
+      box-shadow: none;
+      opacity: 0.5;
+    }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: -2px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
+    }
     & button {
       font-weight: 500;
       font-size: 14px;
@@ -58,13 +100,16 @@
       border: 1px solid #E2E3E5;
       border-radius: 6px;
     }
-    & button:not(:last-child) {
+    & button:nth-child(-n + 3) {
       margin-right: 8px;
     }
   }
+  &__operators__hover {
+    & button:hover {
+      border: 2px solid #5D5FEF;
+    }
+  }
   &__numbers {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
     width: 232px;
     height: 216px;
     padding: 4px;
@@ -72,15 +117,52 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    &__clone {
+      box-shadow: none;
+      opacity: 0.5;
+    }
     & button {
       font-weight: 500;
       font-size: 14px;
       line-height: 15px;
-      width: 72px;
       height: 48px;
       background: #FFFFFF;
       border: 1px solid #E2E3E5;
       border-radius: 6px;
+    }
+    &__buttons {
+      width: 72px;
+    }
+    &__zero {
+      margin-top: 8px;
+      margin-right: 8px;
+      width: 152px;
+    }
+    &__dot {
+      margin-top: 8px;
+      width: 72px;
+    }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: -2px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
+    }
+  }
+  &__numbers__hover {
+    & button:hover {
+      border: 2px solid #5D5FEF;
     }
   }
   &__equals {
@@ -91,6 +173,10 @@
     background: #FFFFFF;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    &__clone {
+      box-shadow: none;
+      opacity: 0.5;
+    }
     & button {
       width: 232px;
       height: 64px;
@@ -104,13 +190,90 @@
       line-height: 15px;
       color: #FFFFFF;
     }
+    &__imgReplace {
+      pointer-events: none;
+      position: relative;
+      left: -9px;
+      top: -2px;
+      & img {
+        pointer-events: none;
+      }
+    }
+    &__imgReplaceDisplayNone {
+      display: none;
+    }
   }
 }
-.drop {
+.dropElemNoShadow {
   box-shadow: none;
-  // display: none;
 }
-.noDrop {
-  box-shadow: none;
-  cursor: no-drop;
+.canvas {
+  font-family: 'Inter';
+  box-sizing: border-box;
+  position: absolute;
+  width: 243px;
+  height: 448px;
+  left: 372px;
+  top: 106px;
+  border: 2px dashed #C4C4C4;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  &__borderNone {
+    border: none;
+    box-shadow: none;
+  }
+  &__display {
+    // height: 60px;
+    margin-bottom: 12px;
+  }
+  &__imgDrop {
+    pointer-events: none;
+    position: relative;
+    left: -5px;
+    top: -18px;
+    & img {
+      pointer-events: none;
+    }
+  }
+  &__imgDropDisplayNone {
+    display: none;
+  }
+  &__imgReplace {
+    pointer-events: none;
+    position: absolute;
+    left: -5px;
+    top: -6px;
+    & img {
+      pointer-events: none;
+    }
+  }
+  &__imgReplaceDisplayNone {
+    display: none;
+  }
+  &__help {
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 182px;
+    &__p1 {
+      font-family: 'Inter';
+      font-weight: 500;
+      font-size: 14px;
+      color: #5D5FEF;
+      margin-top: 10px;
+    }
+    &__p2, &__p3 {
+      font-family: 'Inter';
+      font-size: 12px;
+      color: #6B7280;
+      margin-top: -12px;
+    }
+  }
+}
+.dropZone {
+  background: #F0F9FF;
+}
+.pointer {
+  pointer-events: none;
 }
